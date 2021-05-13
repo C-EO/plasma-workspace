@@ -230,7 +230,6 @@ ColumnLayout {
         enabled: visible
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(Screen.height, results.contentHeight)
-        contentWidth: availableWidth
 
         Milou.ResultsView {
             id: results
@@ -271,7 +270,6 @@ ColumnLayout {
         // don't accept keyboard input when not visible so the keys propagate to the other list
         enabled: visible
         Layout.preferredHeight: Math.min(Screen.height, listView.contentHeight)
-        contentWidth: availableWidth
 
         ListView {
             id: listView // needs this id so the delegate can access it
