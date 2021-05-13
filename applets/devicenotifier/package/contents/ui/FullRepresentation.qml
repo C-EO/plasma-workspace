@@ -110,7 +110,7 @@ PlasmaComponents3.Page {
         }
     }
 
-    PlasmaExtras.ScrollArea {
+    PlasmaComponents3.ScrollView {
         anchors.fill: parent
 
         ListView {

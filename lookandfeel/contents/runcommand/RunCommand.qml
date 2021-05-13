@@ -10,7 +10,6 @@ import QtQuick.Window 2.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents // For Highlight
 import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.milou 0.1 as Milou
 
 ColumnLayout {
@@ -225,12 +224,13 @@ ColumnLayout {
         }
     }
 
-    PlasmaExtras.ScrollArea {
+    PlasmaComponents3.ScrollView {
         Layout.alignment: Qt.AlignTop
         visible: results.count > 0
         enabled: visible
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(Screen.height, results.contentHeight)
+        contentWidth: availableWidth
 
         Milou.ResultsView {
             id: results
@@ -264,13 +264,14 @@ ColumnLayout {
         }
     }
 
-    PlasmaExtras.ScrollArea {
+    PlasmaComponents3.ScrollView {
         Layout.alignment: Qt.AlignTop
         Layout.fillWidth: true
         visible: root.query.length === 0 && listView.count > 0
         // don't accept keyboard input when not visible so the keys propagate to the other list
         enabled: visible
         Layout.preferredHeight: Math.min(Screen.height, listView.contentHeight)
+        contentWidth: availableWidth
 
         ListView {
             id: listView // needs this id so the delegate can access it
