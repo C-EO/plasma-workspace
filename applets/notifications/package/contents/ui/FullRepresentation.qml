@@ -240,6 +240,7 @@ PlasmaComponents3.Page {
             Layout.preferredHeight: PlasmaCore.Units.gridUnit * 24
             Layout.leftMargin: PlasmaCore.Units.smallSpacing
             background: null
+            PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
             ListView {
                 id: list

@@ -230,6 +230,7 @@ ColumnLayout {
         enabled: visible
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(Screen.height, results.contentHeight)
+        PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
         Milou.ResultsView {
             id: results
@@ -270,6 +271,7 @@ ColumnLayout {
         // don't accept keyboard input when not visible so the keys propagate to the other list
         enabled: visible
         Layout.preferredHeight: Math.min(Screen.height, listView.contentHeight)
+        PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
         ListView {
             id: listView // needs this id so the delegate can access it
