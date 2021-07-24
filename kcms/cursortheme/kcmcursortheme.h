@@ -35,6 +35,9 @@ class SortProxyModel;
 class CursorTheme;
 class CursorThemeData;
 
+class LaunchFeedbackData;
+class LaunchFeedbackSettings;
+
 namespace KIO
 {
 class FileCopyJob;
@@ -43,7 +46,10 @@ class FileCopyJob;
 class CursorThemeConfig : public KQuickAddons::ManagedConfigModule
 {
     Q_OBJECT
+
+    Q_PROPERTY(LaunchFeedbackSettings *launchFeedbackSettings READ launchFeedbackSettings CONSTANT)
     Q_PROPERTY(CursorThemeSettings *cursorThemeSettings READ cursorThemeSettings CONSTANT)
+
     Q_PROPERTY(bool canInstall READ canInstall WRITE setCanInstall NOTIFY canInstallChanged)
     Q_PROPERTY(bool canResize READ canResize WRITE setCanResize NOTIFY canResizeChanged)
     Q_PROPERTY(bool canConfigure READ canConfigure WRITE setCanConfigure NOTIFY canConfigureChanged)
@@ -63,6 +69,7 @@ public:
 
     // for QML properties
     CursorThemeSettings *cursorThemeSettings() const;
+    LaunchFeedbackSettings *launchFeedbackSettings() const;
 
     bool canInstall() const;
     void setCanInstall(bool can);
@@ -136,6 +143,8 @@ private:
 
     QScopedPointer<QTemporaryFile> m_tempInstallFile;
     QPointer<KIO::FileCopyJob> m_tempCopyJob;
+
+    LaunchFeedbackData *m_launchData;
 };
 
 #endif

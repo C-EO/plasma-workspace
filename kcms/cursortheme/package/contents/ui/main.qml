@@ -63,6 +63,63 @@ KCM.GridViewKCM {
     footer: ColumnLayout {
         id: footerLayout
 
+        Kirigami.FormLayout {
+            QtControls.ComboBox {
+                Kirigami.FormData.label: i18n("Animation by cursor when opening applications:")
+                textRole: "text"
+                valueRole: "value"
+
+                onCurrentIndexChanged: kcm.launchFeedbackSettings.cursorFeedbackType = model[currentIndex].value
+                currentIndex: kcm.launchFeedbackSettings.cursorFeedbackType
+
+                model: [
+                    { value: LaunchFeedback.CNone, text: i18n("None") },
+                    { value: LaunchFeedback.CStatic, text: i18n("Stationary icon") },
+                    { value: LaunchFeedback.CBlinking, text: i18n("Blinking icon") },
+                    { value: LaunchFeedback.CBouncing, text: i18n("Bouncing icon") },
+                ]
+            }
+            QtControls.ComboBox {
+                id: sizeCombo
+                model: kcm.sizesModel
+                textRole: "display"
+                currentIndex: kcm.cursorSizeIndex(kcm.cursorThemeSettings.cursorSize);
+                onActivated: {
+                    kcm.cursorThemeSettings.cursorSize = kcm.cursorSizeFromIndex(sizeCombo.currentIndex);
+                    kcm.preferredSize = kcm.cursorSizeFromIndex(sizeCombo.currentIndex);
+                }
+
+                Kirigami.FormData.label: i18n("Cursor size:")
+
+                delegate: QtControls.ItemDelegate {
+                    id: sizeComboDelegate
+
+                    readonly property int size: parseInt(model.display)
+
+                    width: parent.width
+                    highlighted: ListView.isCurrentItem
+                    text: model.display
+
+                    contentItem: RowLayout {
+                        Kirigami.Icon {
+                            source: model.decoration
+                            smooth: true
+                            Layout.preferredWidth: sizeComboDelegate.size / Screen.devicePixelRatio
+                            Layout.preferredHeight: sizeComboDelegate.size / Screen.devicePixelRatio
+                            visible: valid && sizeComboDelegate.size > 0
+                        }
+
+                        QtControls.Label {
+                            Layout.fillWidth: true
+                            color: sizeComboDelegate.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                            text: model[sizeCombo.textRole]
+                            elide: Text.ElideRight
+                        }
+                    }
+                }
+            }
+        }
+
         Kirigami.InlineMessage {
             id: infoLabel
             Layout.fillWidth: true
@@ -98,46 +155,6 @@ KCM.GridViewKCM {
                 extraEnabledConditions: kcm.canResize
             }
 
-            QtControls.Label {
-                text: i18n("Size:")
-            }
-            QtControls.ComboBox {
-                id: sizeCombo
-                model: kcm.sizesModel
-                textRole: "display"
-                currentIndex: kcm.cursorSizeIndex(kcm.cursorThemeSettings.cursorSize);
-                onActivated: {
-                    kcm.cursorThemeSettings.cursorSize = kcm.cursorSizeFromIndex(sizeCombo.currentIndex);
-                    kcm.preferredSize = kcm.cursorSizeFromIndex(sizeCombo.currentIndex);
-                }
-
-                delegate: QtControls.ItemDelegate {
-                    id: sizeComboDelegate
-
-                    readonly property int size: parseInt(model.display)
-
-                    width: parent.width
-                    highlighted: ListView.isCurrentItem
-                    text: model.display
-
-                    contentItem: RowLayout {
-                        Kirigami.Icon {
-                            source: model.decoration
-                            smooth: true
-                            Layout.preferredWidth: sizeComboDelegate.size / Screen.devicePixelRatio
-                            Layout.preferredHeight: sizeComboDelegate.size / Screen.devicePixelRatio
-                            visible: valid && sizeComboDelegate.size > 0
-                        }
-
-                        QtControls.Label {
-                            Layout.fillWidth: true
-                            color: sizeComboDelegate.highlighted ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
-                            text: model[sizeCombo.textRole]
-                            elide: Text.ElideRight
-                        }
-                    }
-                }
-            }
             Kirigami.ActionToolBar {
                 flat: false
                 alignment: Qt.AlignRight
