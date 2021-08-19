@@ -112,6 +112,7 @@ PlasmaComponents3.Page {
 
     PlasmaComponents3.ScrollView {
         anchors.fill: parent
+        // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
         PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
         ListView {

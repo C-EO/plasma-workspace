@@ -29,6 +29,7 @@ PlasmaComponents3.ScrollView {
 
     implicitHeight: Math.min(bodyText.implicitHeight, PlasmaCore.Units.gridUnit * 5)
 
+    // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
     PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
     contentWidth: availableWidth
 

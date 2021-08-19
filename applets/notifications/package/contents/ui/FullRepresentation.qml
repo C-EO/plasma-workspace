@@ -240,6 +240,8 @@ PlasmaComponents3.Page {
             Layout.preferredHeight: PlasmaCore.Units.gridUnit * 24
             Layout.leftMargin: PlasmaCore.Units.smallSpacing
             background: null
+            // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
+
             PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
             ListView {

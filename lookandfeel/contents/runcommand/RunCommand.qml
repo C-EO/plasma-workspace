@@ -230,6 +230,7 @@ ColumnLayout {
         enabled: visible
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(Screen.height, results.contentHeight)
+        // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
         PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
         Milou.ResultsView {
@@ -271,6 +272,7 @@ ColumnLayout {
         // don't accept keyboard input when not visible so the keys propagate to the other list
         enabled: visible
         Layout.preferredHeight: Math.min(Screen.height, listView.contentHeight)
+        // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
         PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
         ListView {
