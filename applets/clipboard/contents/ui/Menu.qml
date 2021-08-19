@@ -26,7 +26,7 @@ PlasmaComponents3.ScrollView {
     signal edit(string uuid)
     signal barcode(string text)
     signal action(string uuid)
-    / HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
+    // HACK: workaround for https://bugreports.qt.io/browse/QTBUG-83890
     PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
     ListView {
