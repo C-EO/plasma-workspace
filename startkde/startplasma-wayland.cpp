@@ -4,6 +4,9 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
+#include "../../kpackage/src/kpackage/packageloader.h"
+#include "../kcms/lookandfeel/lookandfeelmanager.h"
+#include "../kcms/lookandfeel/lookandfeelsettings.h"
 #include "startplasma.h"
 #include <KConfig>
 #include <KConfigGroup>
@@ -66,7 +69,6 @@ int main(int argc, char **argv)
     qputenv("PLASMA_USE_QT_SCALING", "1");
     qputenv("GDK_SCALE", "1");
     qputenv("GDK_DPI_SCALE", "1");
-
     qputenv("XDG_SESSION_TYPE", "wayland");
 
     auto oldSystemdEnvironment = getSystemdEnvironment();
@@ -86,9 +88,27 @@ int main(int argc, char **argv)
         for (int i = 1; i < argc; ++i) {
             args << QString::fromLocal8Bit(argv[i]);
         }
-    } else {
+    }
+
+    if (int index = args.indexOf(QStringLiteral("--lookandfeel")); index >= 0 && index + 1 < args.count()) {
+        const QString requestedTheme = args.takeAt(index + 1);
+        args.removeAt(index);
+
+        // If there's no session running, just set the files
+        LookAndFeelManager lnf;
+        auto previousPackage = KPackage::PackageLoader::self()->loadPackage(QStringLiteral("Plasma/LookAndFeel"), lnf.settings()->lookAndFeelPackage());
+        lnf.setResetDefaultLayout(false);
+        lnf.settings()->setLookAndFeelPackage(requestedTheme);
+        lnf.settings()->save();
+
+        auto newPackage = KPackage::PackageLoader::self()->loadPackage(QStringLiteral("Plasma/LookAndFeel"), requestedTheme);
+        lnf.save(newPackage, previousPackage);
+    }
+
+    if (args.isEmpty()) {
         args = QStringList{QStringLiteral("--xwayland"), QStringLiteral(CMAKE_INSTALL_FULL_LIBEXECDIR "/startplasma-waylandsession")};
     }
+
     runSync(QStringLiteral("kwin_wayland_wrapper"), args);
 
     out << "startplasmacompositor: Shutting down...\n";

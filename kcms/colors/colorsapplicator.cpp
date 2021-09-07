@@ -149,7 +149,11 @@ void applyScheme(const QString &colorSchemePath, KConfig *configOutput, KConfig:
         group = KConfigGroup(&cfg, "X11");
         applyToAlien = group.readEntry("exportKDEColors", applyToAlien);
     }
+
+    // Allow disabling for startplasma
+#ifndef DISABLE_NOTIFY
     runRdb(KRdbExportQtColors | KRdbExportGtkTheme | (applyToAlien ? KRdbExportColors : 0));
 
     notifyKcmChange(GlobalChangeType::PaletteChanged);
+#endif
 }
