@@ -19,11 +19,13 @@
 #include <KPackage/Package>
 #include <KPackage/PackageLoader>
 
+#include "lookandfeelmanager.h"
 #include "lookandfeelsettings.h"
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
+    const bool runningSession = qEnvironmentVariableIsSet("DISPLAY") || qEnvironmentVariableIsSet("WAYLAND_DISPLAY");
+    QScopedPointer<QCoreApplication> app(runningSession ? new QApplication(argc, argv) : new QCoreApplication(argc, argv));
 
     const char version[] = "1.0";
 
@@ -56,7 +58,7 @@ int main(int argc, char **argv)
     parser.addOption(_resetLayout);
     aboutData.setupCommandLine(&parser);
 
-    parser.process(app);
+    parser.process(*app);
     aboutData.processCommandLine(&parser);
 
     if (!parser.isSet(_list) && !parser.isSet(_apply)) {
@@ -92,14 +94,27 @@ int main(int argc, char **argv)
             }
         }
 
-        KCMLookandFeel *kcm = new KCMLookandFeel(nullptr, QVariantList());
-        kcm->load();
-        kcm->setResetDefaultLayout(parser.isSet(_resetLayout));
-        kcm->lookAndFeelSettings()->setLookAndFeelPackage(requestedTheme);
-        // Save manually as we aren't in an event loop
-        kcm->lookAndFeelSettings()->save();
-        kcm->save();
-        delete kcm;
+        if (runningSession) {
+            KCMLookandFeel *kcm = new KCMLookandFeel(nullptr, QVariantList());
+            kcm->load();
+            kcm->setResetDefaultLayout(parser.isSet(_resetLayout));
+            kcm->lookAndFeelSettings()->setLookAndFeelPackage(requestedTheme);
+            // Save manually as we aren't in an event loop
+            kcm->lookAndFeelSettings()->save();
+            kcm->save();
+            delete kcm;
+        } else {
+            // If there's no session running, just set the files
+            LookAndFeelManager lnf;
+            auto previousPackage = KPackage::PackageLoader::self()->loadPackage(QStringLiteral("Plasma/LookAndFeel"), lnf.settings()->lookAndFeelPackage());
+
+            lnf.setResetDefaultLayout(parser.isSet(_resetLayout));
+            lnf.settings()->setLookAndFeelPackage(requestedTheme);
+            lnf.settings()->save();
+
+            auto newPackage = KPackage::PackageLoader::self()->loadPackage(QStringLiteral("Plasma/LookAndFeel"), requestedTheme);
+            lnf.save(newPackage, previousPackage);
+        }
     }
 
     return 0;
