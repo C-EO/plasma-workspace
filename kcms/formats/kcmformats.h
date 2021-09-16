@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <KConfigGroup>
 #include <KQuickAddons/ManagedConfigModule>
 
 class FormatsSettings;

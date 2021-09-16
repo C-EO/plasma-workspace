@@ -25,8 +25,11 @@ LocaleListModel::LocaleListModel()
     auto m_locales = QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript, QLocale::AnyCountry);
     m_localeTuples.reserve(m_locales.size());
     for (auto &locale : m_locales) {
-        m_localeTuples.push_back(
-            std::tuple<QString, QString, QString, QLocale>(locale.nativeLanguageName(), locale.nativeCountryName(), locale.name(), locale));
+        if (locale == QLocale::c())
+            m_localeTuples.push_back(std::tuple<QString, QString, QString, QLocale>(i18n("Default"), QLatin1String(), QLatin1String(), locale));
+        else
+            m_localeTuples.push_back(
+                std::tuple<QString, QString, QString, QLocale>(locale.nativeLanguageName(), locale.nativeCountryName(), locale.name(), locale));
     }
 }
 int LocaleListModel::rowCount(const QModelIndex &parent) const
@@ -54,7 +57,7 @@ QVariant LocaleListModel::data(const QModelIndex &index, int role) const
             flagCode = split[1].toLower();
         }
         auto flagIconPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kf5/locale/countries/%1/flag.png").arg(flagCode));
-        return flagIconPath.isEmpty() ? QStringLiteral("unknown") : flagIconPath;
+        return flagIconPath /*.isEmpty() ? QStringLiteral("unknown") : flagIconPath*/;
     }
     case DisplayName: {
         const QString clabel = !std::get<1>(tuple).isEmpty() ? std::get<1>(tuple) : QLocale::countryToString(std::get<3>(tuple).country());

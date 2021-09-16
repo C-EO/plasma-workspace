@@ -24,7 +24,7 @@ KCMFormats::KCMFormats(QObject *parent, const QVariantList &args)
     , m_settings(new FormatsSettings(this))
 {
     KAboutData *aboutData = new KAboutData(QStringLiteral("kcm_formats"),
-                                           i18nc("@title", "formats"),
+                                           i18nc("@title", "Formats"),
                                            QStringLiteral("0.1"),
                                            QLatin1String(""),
                                            KAboutLicense::LicenseKey::GPL_V2,

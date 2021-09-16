@@ -13,6 +13,23 @@ import LocaleListModel 1.0
 Kirigami.Page {
     property string setting: ""
     id: root
+    title: {
+        switch (setting) {
+        case "lang":
+            return i18n("Language")
+        case "numeric":
+            return i18n("Number")
+        case "time":
+            return i18n("Time")
+        case "currency":
+            return i18n("Currency")
+        case "measurement":
+            return i18n("Measurement")
+        case "collate":
+            return i18n("Collate")
+        }
+    }
+
     LocaleListModel {
         id: localeListModel
     }
@@ -21,42 +38,44 @@ Kirigami.Page {
         TextField {
             id: searchField
             Layout.fillWidth: true
+            focus: true
             placeholderText: i18n("Search...")
             onTextChanged: localeListModel.filter = text
         }
-        ListView {
-            Layout.topMargin: Kirigami.Units.gridUnit * 3
-            Layout.bottomMargin: Kirigami.Units.gridUnit * 3
+        ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            model: localeListModel
-            delegate: Kirigami.BasicListItem {
-                icon: flag
-                text: display
-                subtitle: localeName
-                onClicked: {
-                    switch (setting) {
-                    case "lang":
-                        kcm.settings.lang = localeName;
-                        break;
-                    case "numeric":
-                        kcm.settings.numeric = localeName;
-                        break;
-                    case "time":
-                        kcm.settings.time = localeName;
-                        break;
-                    case "currency":
-                        kcm.settings.monetary = localeName;
-                        break;
-                    case "measurement":
-                        kcm.settings.measurement = localeName;
-                        break;
-                    case "collate":
-                        kcm.settings.collate = localeName;
-                        break;
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+            ListView {
+                model: localeListModel
+                delegate: Kirigami.BasicListItem {
+                    icon: flag
+                    text: display
+                    subtitle: localeName
+                    onClicked: {
+                        switch (setting) {
+                        case "lang":
+                            kcm.settings.lang = localeName;
+                            break;
+                        case "numeric":
+                            kcm.settings.numeric = localeName;
+                            break;
+                        case "time":
+                            kcm.settings.time = localeName;
+                            break;
+                        case "currency":
+                            kcm.settings.monetary = localeName;
+                            break;
+                        case "measurement":
+                            kcm.settings.measurement = localeName;
+                            break;
+                        case "collate":
+                            kcm.settings.collate = localeName;
+                            break;
+                        }
+                        kcm.currentIndex = 0;
+                        kcm.showPassiveNotification(i18n("Your changes will take effect the next time you log in."));
                     }
-                    kcm.currentIndex = 0;
-                    kcm.showPassiveNotification(i18n("Your changes will take effect the next time you log in."));
                 }
             }
         }
