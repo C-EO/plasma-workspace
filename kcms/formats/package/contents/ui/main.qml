@@ -10,7 +10,7 @@ import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.7 as Kirigami
 import org.kde.kcm 1.2
 
-SimpleKCM {
+ScrollViewKCM {
     id: root
     implicitHeight: Kirigami.Units.gridUnit * 40
     implicitWidth: Kirigami.Units.gridUnit * 20
@@ -23,7 +23,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("lang")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
         Kirigami.BasicListItem {
             text: i18n("Number")
@@ -34,7 +34,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("numeric")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
         Kirigami.BasicListItem {
             text: i18n("Time")
@@ -45,7 +45,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("time")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
         Kirigami.BasicListItem {
             text: i18n("Currency")
@@ -56,7 +56,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("currency")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
         Kirigami.BasicListItem {
             text: i18n("Measurement")
@@ -67,7 +67,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("measurement")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
         Kirigami.BasicListItem {
             text: i18n("Collate and Sorting")
@@ -78,7 +78,7 @@ SimpleKCM {
             onClicked: {
                 pushWithSetting("collate")
             }
-            Layout.preferredWidth: root.width
+            Layout.preferredWidth: root.width - 20
         }
     }
 

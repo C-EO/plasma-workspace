@@ -17,6 +17,7 @@
  *  along with this program; if not, write to the Free Software
  */
 #include "localelistmodel.h"
+#include "exampleutility.cpp"
 #include "kcmformats.h"
 #include <KLocalizedString>
 #include <QTextCodec>
@@ -70,6 +71,24 @@ QVariant LocaleListModel::data(const QModelIndex &index, int role) const
     case LocaleName: {
         return std::get<2>(tuple);
     }
+    case Example: {
+        switch (m_configType) {
+        case Lang:
+            return {};
+        case Numeric:
+            return Utility::numericExample(std::get<3>(tuple));
+        case Time:
+            return Utility::shortTimeExample(std::get<3>(tuple));
+        case Currency:
+            return Utility::monetaryExample(std::get<3>(tuple));
+        case Measurement:
+            return Utility::measurementExample(std::get<3>(tuple));
+        case Collate:
+            return Utility::collateExample(std::get<3>(tuple));
+        default:
+            return {};
+        }
+    }
     default:
         return {};
     }
@@ -77,7 +96,7 @@ QVariant LocaleListModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> LocaleListModel::roleNames() const
 {
-    return {{LocaleName, "localeName"}, {DisplayName, "display"}, {FlagIcon, "flag"}};
+    return {{LocaleName, "localeName"}, {DisplayName, "display"}, {FlagIcon, "flag"}, {Example, "example"}};
 }
 
 const QString &LocaleListModel::filter() const
@@ -113,4 +132,42 @@ void LocaleListModel::filterLocale()
     } else
         m_noFilter = true;
     endResetModel();
+}
+
+QString LocaleListModel::selectedConfig() const
+{
+    switch (m_configType) {
+    case Lang:
+        return QStringLiteral("lang");
+    case Numeric:
+        return QStringLiteral("numeric");
+    case Time:
+        return QStringLiteral("time");
+    case Currency:
+        return QStringLiteral("currency");
+    case Measurement:
+        return QStringLiteral("measurement");
+    case Collate:
+        return QStringLiteral("collate");
+    }
+    // won't reach here
+    return {};
+}
+
+void LocaleListModel::setSelectedConfig(const QString &config)
+{
+    if (config == QStringLiteral("lang"))
+        m_configType = Lang;
+    else if (config == QStringLiteral("numeric"))
+        m_configType = Numeric;
+    else if (config == QStringLiteral("time"))
+        m_configType = Time;
+    else if (config == QStringLiteral("measurement"))
+        m_configType = Measurement;
+    else if (config == QStringLiteral("currency"))
+        m_configType = Currency;
+    else
+        m_configType = Collate;
+    Q_EMIT selectedConfigChanged();
+    Q_EMIT dataChanged(createIndex(0, 0), createIndex(rowCount(), 0), QVector<int>(1, Example));
 }

@@ -13,21 +13,30 @@ import LocaleListModel 1.0
 Kirigami.Page {
     property string setting: ""
     id: root
-    title: {
+    title: ""
+
+    onSettingChanged: {
         switch (setting) {
         case "lang":
-            return i18n("Language")
+            title = i18n("Language");
+            break;
         case "numeric":
-            return i18n("Number")
+            title = i18n("Number");
+            break;
         case "time":
-            return i18n("Time")
+            title = i18n("Time");
+            break;
         case "currency":
-            return i18n("Currency")
+            title = i18n("Currency");
+            break;
         case "measurement":
-            return i18n("Measurement")
+            title = i18n("Measurement");
+            break;
         case "collate":
-            return i18n("Collate")
+            title = i18n("Collate");
+            break;
         }
+        localeListModel.selectedConfig = setting;
     }
 
     LocaleListModel {
@@ -52,6 +61,10 @@ Kirigami.Page {
                     icon: flag
                     text: display
                     subtitle: localeName
+                    trailing: Text {
+                        color: Kirigami.Theme.disabledTextColor
+                        text: example
+                    }
                     onClicked: {
                         switch (setting) {
                         case "lang":

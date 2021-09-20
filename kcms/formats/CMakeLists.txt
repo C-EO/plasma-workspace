@@ -5,6 +5,7 @@ set(kcm_formats_PART_SRCS
     kcmformats.cpp
     localelistmodel.cpp
     formatssettings.cpp
+    exampleutility.cpp
 )
 
 kconfig_add_kcfg_files(kcm_formats_PART_SRCS formatssettings.kcfgc GENERATE_MOC)

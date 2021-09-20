@@ -7,16 +7,17 @@
 */
 
 #include <QCollator>
-#include <QtGlobal>
 
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KPluginFactory>
 #include <KSharedConfig>
 
+#include "exampleutility.cpp"
 #include "formatssettings.h"
 #include "kcmformats.h"
 #include "localelistmodel.h"
+
 K_PLUGIN_CLASS_WITH_JSON(KCMFormats, "metadata.json")
 
 KCMFormats::KCMFormats(QObject *parent, const QVariantList &args)
@@ -65,37 +66,23 @@ void KCMFormats::handleLangChange()
 
 QString KCMFormats::numberExample() const
 {
-    return QLocale(m_settings->numeric()).toString(1000.01);
+    return Utility::numericExample(QLocale(m_settings->numeric()));
 }
 QString KCMFormats::timeExample() const
 {
-    auto tloc = QLocale(m_settings->time());
-    return i18n("%1 (long format)", tloc.toString(QDateTime::currentDateTime())) + QLatin1Char('\n')
-        + i18n("%1 (short format)", tloc.toString(QDateTime::currentDateTime(), QLocale::ShortFormat));
+    return Utility::timeExample(QLocale(m_settings->time()));
 }
 QString KCMFormats::currencyExample() const
 {
-    return QLocale(m_settings->monetary()).toCurrencyString(24.00);
+    return Utility::monetaryExample(QLocale(m_settings->monetary()));
 }
 QString KCMFormats::measurementExample() const
 {
-    auto mloc = QLocale(m_settings->measurement());
-    QString measurementExample;
-    if (mloc.measurementSystem() == QLocale::ImperialUKSystem) {
-        measurementExample = i18nc("Measurement combobox", "Imperial UK");
-    } else if (mloc.measurementSystem() == QLocale::ImperialUSSystem || mloc.measurementSystem() == QLocale::ImperialSystem) {
-        measurementExample = i18nc("Measurement combobox", "Imperial US");
-    } else {
-        measurementExample = i18nc("Measurement combobox", "Metric");
-    }
-    return measurementExample;
+    return Utility::measurementExample(QLocale(m_settings->measurement()));
 }
 QString KCMFormats::collateExample() const
 {
-    auto example{QStringLiteral("abcdefgxyzABCDEFGXYZÅåÄäÖöÅåÆæØø")};
-    auto collator{QCollator{m_settings->collate()}};
-    std::sort(example.begin(), example.end(), collator);
-    return example;
+    return Utility::collateExample(m_settings->collate());
 }
 FormatsSettings *KCMFormats::settings() const
 {

@@ -25,8 +25,10 @@ class LocaleListModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
+    Q_PROPERTY(QString selectedConfig READ selectedConfig WRITE setSelectedConfig NOTIFY selectedConfigChanged)
 public:
-    enum RoleName { DisplayName = Qt::DisplayRole, LocaleName, FlagIcon };
+    enum RoleName { DisplayName = Qt::DisplayRole, LocaleName, FlagIcon, Example };
+    enum ConfigType { Lang, Numeric, Time, Currency, Measurement, Collate };
     LocaleListModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -35,17 +37,22 @@ public:
 
     const QString &filter() const;
     void setFilter(const QString &filter);
+    QString selectedConfig() const;
+    void setSelectedConfig(const QString &config);
 
 Q_SIGNALS:
     void filterChanged();
+    void selectedConfigChanged();
 
 private:
     void filterLocale();
+    void getExample();
 
     QString m_filter;
     std::vector<std::tuple<QString, QString, QString, QLocale>> m_localeTuples; // lang, country, name
     std::vector<int> m_filteredLocales;
     bool m_noFilter = true;
+    ConfigType m_configType = Lang;
 };
 
 #endif // LOCALELISTMODEL_H
