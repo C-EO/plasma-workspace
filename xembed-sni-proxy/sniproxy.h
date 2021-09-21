@@ -80,8 +80,6 @@ public:
      */
     KDbusImageVector IconPixmap() const;
 
-    void ProvideXdgActivationToken(const QString &token);
-
 public Q_SLOTS:
     // interaction
     /**
