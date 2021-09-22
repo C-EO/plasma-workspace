@@ -38,10 +38,10 @@ include(ECMQMLModules)
 include(ECMGenerateExportHeader)
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
-                    Plasma DocTools Runner Notifications NotifyConfig Su NewStuff Wallet IdleTime
+                    Plasma Runner Notifications NotifyConfig Su NewStuff Wallet IdleTime
                     Declarative I18n KCMUtils TextWidgets Crash GlobalAccel DBusAddons Wayland
                     CoreAddons People ActivitiesStats Activities KIO Prison PlasmaQuick Package
-                    GuiAddons Archive ItemModels IconThemes UnitConversion ItemModels Init TextEditor)
+                    GuiAddons Archive ItemModels IconThemes UnitConversion ItemModels TextEditor)
 
 find_package(KDED CONFIG REQUIRED)
 
@@ -125,7 +125,6 @@ endif()
 find_package(QtWaylandScanner REQUIRED)
 find_package(Qt5WaylandClient)
 find_package(Qt5XkbCommonSupport)
-find_package(PlasmaWaylandProtocols REQUIRED)
 find_package(Wayland REQUIRED COMPONENTS Client)
 
 if(FONTCONFIG_FOUND)
@@ -189,7 +188,7 @@ configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-works
 configure_file(config-unix.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-unix.h )
 configure_file(config-X11.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-X11.h)
 configure_file(config-appstream.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-appstream.h )
-add_subdirectory(login-sessions)
+#add_subdirectory(login-sessions)
 
 plasma_install_package(lookandfeel org.kde.breeze.desktop look-and-feel lookandfeel)
 plasma_install_package(lookandfeel.dark org.kde.breezedark.desktop look-and-feel lookandfeel)
@@ -221,59 +220,59 @@ query_qmake(QtBinariesDir QT_INSTALL_BINS)
 
 option(PLASMA_WAYLAND_DEFAULT_SESSION "Use Wayland session by default for Plasma" FALSE)
 
-add_subdirectory(doc)
-add_subdirectory(libkworkspace)
-add_subdirectory(libdbusmenuqt)
-add_subdirectory(appmenu)
+#add_subdirectory(doc)
+#add_subdirectory(libkworkspace)
+#add_subdirectory(libdbusmenuqt)
+#add_subdirectory(appmenu)
 
-add_subdirectory(libtaskmanager)
-add_subdirectory(libnotificationmanager)
-add_subdirectory(libcolorcorrect)
-add_subdirectory(components)
+#add_subdirectory(libtaskmanager)
+#add_subdirectory(libnotificationmanager)
+#add_subdirectory(libcolorcorrect)
+#add_subdirectory(components)
 
-add_subdirectory(plasma-windowed)
-add_subdirectory(shell)
-add_subdirectory(freespacenotifier)
-add_subdirectory(klipper)
-add_subdirectory(krunner)
-add_subdirectory(ksmserver)
-add_subdirectory(logout-greeter)
-add_subdirectory(ksplash)
-add_subdirectory(systemmonitor)
-add_subdirectory(statusnotifierwatcher)
-add_subdirectory(startkde)
-add_subdirectory(themes)
+#add_subdirectory(plasma-windowed)
+#add_subdirectory(shell)
+#add_subdirectory(freespacenotifier)
+#add_subdirectory(klipper)
+#add_subdirectory(krunner)
+#add_subdirectory(ksmserver)
+#add_subdirectory(logout-greeter)
+#add_subdirectory(ksplash)
+#add_subdirectory(systemmonitor)
+#add_subdirectory(statusnotifierwatcher)
+#add_subdirectory(startkde)
+#add_subdirectory(themes)
 
 add_subdirectory(kcms)
 
-add_subdirectory(containmentactions)
-add_subdirectory(runners)
-add_subdirectory(applets)
-add_subdirectory(dataengines)
-add_subdirectory(wallpapers)
+#add_subdirectory(containmentactions)
+#add_subdirectory(runners)
+#add_subdirectory(applets)
+#add_subdirectory(dataengines)
+#add_subdirectory(wallpapers)
 
-add_subdirectory(kioslave)
-add_subdirectory(ktimezoned)
-add_subdirectory(menu)
-add_subdirectory(phonon)
+#add_subdirectory(kioslave)
+#add_subdirectory(ktimezoned)
+#add_subdirectory(menu)
+#add_subdirectory(phonon)
 
-add_subdirectory(interactiveconsole)
+#add_subdirectory(interactiveconsole)
 
 # This ensures pressing the eject button on a CD drive ejects the disc
 # It listens to the Solid::OpticalDrive::ejectPressed signal that is only
 # supported by Solid in the HAL backend and does nothing with UDev
 if(CMAKE_SYSTEM_NAME MATCHES FreeBSD)
-add_subdirectory(solidautoeject)
+#add_subdirectory(solidautoeject)
 endif()
 
 ecm_optional_add_subdirectory(xembed-sni-proxy)
 
 ecm_optional_add_subdirectory(gmenu-dbusmenu-proxy)
 
-add_subdirectory(soliduiserver)
+#add_subdirectory(soliduiserver)
 
 if(KF5Holidays_FOUND)
-    add_subdirectory(plasmacalendarintegration)
+    #add_subdirectory(plasmacalendarintegration)
 endif()
 
 ki18n_install(po)

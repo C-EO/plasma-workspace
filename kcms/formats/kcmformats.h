@@ -1,5 +1,5 @@
 /*
-    kcmformats.cpp
+    kcmformats.h
     SPDX-FileCopyrightText: 2014 Sebastian Kügler <sebas@kde.org>
     SPDX-FileCopyrightText: 2021 Han Young <hanyoung@protonmail.com>
 

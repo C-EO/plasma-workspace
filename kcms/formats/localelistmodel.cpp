@@ -26,20 +26,22 @@ LocaleListModel::LocaleListModel()
     auto m_locales = QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript, QLocale::AnyCountry);
     m_localeTuples.reserve(m_locales.size());
     for (auto &locale : m_locales) {
-        if (locale == QLocale::c())
+        if (locale == QLocale::c()) {
             m_localeTuples.push_back(std::tuple<QString, QString, QString, QLocale>(i18n("Default"), QLatin1String(), QLatin1String(), locale));
-        else
+        } else {
             m_localeTuples.push_back(
                 std::tuple<QString, QString, QString, QLocale>(locale.nativeLanguageName(), locale.nativeCountryName(), locale.name(), locale));
+        }
     }
 }
 int LocaleListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    if (m_noFilter)
+    if (m_noFilter) {
         return m_localeTuples.size();
-    else
+    } else {
         return m_filteredLocales.size();
+    }
 }
 QVariant LocaleListModel::data(const QModelIndex &index, int role) const
 {
@@ -106,8 +108,9 @@ const QString &LocaleListModel::filter() const
 
 void LocaleListModel::setFilter(const QString &filter)
 {
-    if (m_filter == filter)
+    if (m_filter == filter) {
         return;
+    }
     m_filter = filter;
     filterLocale();
 }
@@ -129,8 +132,9 @@ void LocaleListModel::filterLocale()
             i++;
         }
         m_noFilter = false;
-    } else
+    } else {
         m_noFilter = true;
+    }
     endResetModel();
 }
 
@@ -156,18 +160,19 @@ QString LocaleListModel::selectedConfig() const
 
 void LocaleListModel::setSelectedConfig(const QString &config)
 {
-    if (config == QStringLiteral("lang"))
+    if (config == QStringLiteral("lang")) {
         m_configType = Lang;
-    else if (config == QStringLiteral("numeric"))
+    } else if (config == QStringLiteral("numeric")) {
         m_configType = Numeric;
-    else if (config == QStringLiteral("time"))
+    } else if (config == QStringLiteral("time")) {
         m_configType = Time;
-    else if (config == QStringLiteral("measurement"))
+    } else if (config == QStringLiteral("measurement")) {
         m_configType = Measurement;
-    else if (config == QStringLiteral("currency"))
+    } else if (config == QStringLiteral("currency")) {
         m_configType = Currency;
-    else
+    } else {
         m_configType = Collate;
+    }
     Q_EMIT selectedConfigChanged();
     Q_EMIT dataChanged(createIndex(0, 0), createIndex(rowCount(), 0), QVector<int>(1, Example));
 }

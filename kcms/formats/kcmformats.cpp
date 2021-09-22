@@ -29,12 +29,11 @@ KCMFormats::KCMFormats(QObject *parent, const QVariantList &args)
                                            QStringLiteral("0.1"),
                                            QLatin1String(""),
                                            KAboutLicense::LicenseKey::GPL_V2,
-                                           i18nc("@info:credit", "Copyright Year Author"));
+                                           i18nc("@info:credit", "Copyright 2021 Han Young"));
 
-    aboutData->addAuthor(i18nc("@info:credit", "Author"), i18nc("@info:credit", "Author"), QStringLiteral("author@domain.com"));
+    aboutData->addAuthor(i18nc("@info:credit", "Han Young"), i18nc("@info:credit", "Author"), QStringLiteral("hanyoung@protonmail.com"));
 
     setAboutData(aboutData);
-    setButtons(Help | Apply | Default);
     setQuickHelp(
         i18n("<h1>Formats</h1>"
              "You can configure the formats used for time, dates, money and other numbers here."));

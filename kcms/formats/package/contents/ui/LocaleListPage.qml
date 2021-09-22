@@ -4,39 +4,34 @@
   SPDX-License-Identifier: LGPL-3.0-or-later
 */
 import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick.Controls 2.12 as QQC2
 import QtQuick.Layouts 1.15
 
-import org.kde.kirigami 2.7 as Kirigami
+import org.kde.kirigami 2.8 as Kirigami
 import org.kde.kcm 1.2
 import LocaleListModel 1.0
+
 Kirigami.Page {
     property string setting: ""
     id: root
     title: ""
 
     onSettingChanged: {
+        localeListModel.selectedConfig = setting;
         switch (setting) {
         case "lang":
-            title = i18n("Language");
-            break;
+            return i18n("Language");
         case "numeric":
-            title = i18n("Number");
-            break;
+            return i18n("Number");
         case "time":
-            title = i18n("Time");
-            break;
+            return i18n("Time");
         case "currency":
-            title = i18n("Currency");
-            break;
+            return i18n("Currency");
         case "measurement":
-            title = i18n("Measurement");
-            break;
+            return i18n("Measurement");
         case "collate":
-            title = i18n("Collate");
-            break;
+            return i18n("Collate");
         }
-        localeListModel.selectedConfig = setting;
     }
 
     LocaleListModel {
@@ -44,24 +39,21 @@ Kirigami.Page {
     }
     ColumnLayout {
         anchors.fill: parent
-        TextField {
+        Kirigami.SearchField {
             id: searchField
             Layout.fillWidth: true
-            focus: true
-            placeholderText: i18n("Search...")
             onTextChanged: localeListModel.filter = text
         }
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
             ListView {
                 model: localeListModel
                 delegate: Kirigami.BasicListItem {
                     icon: flag
                     text: display
                     subtitle: localeName
-                    trailing: Text {
+                    trailing: QQC2.Label {
                         color: Kirigami.Theme.disabledTextColor
                         text: example
                     }
