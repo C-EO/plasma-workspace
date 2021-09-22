@@ -20,6 +20,7 @@ target_link_libraries(systemclipboard
                       Qt::WaylandClient
                       Wayland::Client
                       KF5::WindowSystem
+                      Qt::Concurrent
 )
 
 if(BUILD_TESTING)

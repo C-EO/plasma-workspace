@@ -8,9 +8,11 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QFuture>
 #include <QFutureWatcher>
 #include <QGuiApplication>
 #include <QPointer>
+#include <QtConcurrentRun>
 
 #include <QtWaylandClient/QWaylandClientExtension>
 
@@ -79,7 +81,7 @@ protected:
     QVariant retrieveData(const QString &mimeType, QVariant::Type type) const override;
 
 private:
-    static bool readData(int fd, QByteArray &data);
+    static QVariant readData(int fd);
     QStringList m_receivedFormats;
 };
 
@@ -109,6 +111,7 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QVariant::Type 
     /*
      * Ideally we need to introduce a non-blocking QMimeData object
      * Or a non-blocking constructor to QMimeData with the mimetypes that are relevant
+     * To not block the Plasma process when copying from Plasma, we use a nested event loop
      *
      * However this isn't actually any worse than X.
      */
@@ -118,44 +121,51 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QVariant::Type 
     wl_display_flush(display);
 
     QFile readPipe;
-    if (readPipe.open(pipeFds[0], QIODevice::ReadOnly)) {
-        QByteArray data;
-        if (readData(pipeFds[0], data)) {
-            close(pipeFds[0]);
-            return data;
-        }
-        close(pipeFds[0]);
+    if (!readPipe.open(pipeFds[0], QIODevice::ReadOnly)) {
+        return QVariant();
     }
-    return QVariant();
+
+    QEventLoop nestedLoop;
+    QFuture<QVariant> data = QtConcurrent::run(readData, pipeFds[0]);
+    auto watcher = new QFutureWatcher<QVariant>;
+    connect(watcher, &QFutureWatcher<QVariant>::finished, &nestedLoop, &QEventLoop::quit);
+    watcher->setFuture(data);
+    qDebug() << "exec" << this;
+    nestedLoop.exec();
+    qDebug() << "continue";
+    close(pipeFds[0]);
+    qDebug() << "return";
+    return data;
 }
 
 // reads data from a file descriptor with a timeout of 1 second
-// true if data is read successfully
-bool DataControlOffer::readData(int fd, QByteArray &data)
+QVariant DataControlOffer::readData(int fd)
 {
     pollfd pfds[1];
     pfds[0].fd = fd;
     pfds[0].events = POLLIN;
 
+    QByteArray data;
     while (true) {
         const int ready = poll(pfds, 1, 1000);
         if (ready < 0) {
             if (errno != EINTR) {
                 qWarning("DataControlOffer: poll() failed: %s", strerror(errno));
-                return false;
+                return QVariant();
             }
         } else if (ready == 0) {
             qWarning("DataControlOffer: timeout reading from pipe");
-            return false;
+            return QVariant();
         } else {
             char buf[4096];
             int n = read(fd, buf, sizeof buf);
 
             if (n < 0) {
                 qWarning("DataControlOffer: read() failed: %s", strerror(errno));
-                return false;
+                return QVariant();
             } else if (n == 0) {
-                return true;
+                qDebug() << "read finished";
+                return data;
             } else if (n > 0) {
                 data.append(buf, n);
             }
@@ -376,6 +386,8 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     } else if (mode == QClipboard::Selection) {
         m_device->setPrimarySelection(std::move(source));
     }
+    // also set the QtClipboard so we don't fetch from ourselves later
+    //      qApp->clipboard()->setMimeData(mime, mode);
 }
 
 void WaylandClipboard::clear(QClipboard::Mode mode)
