@@ -1,5 +1,5 @@
 /*
- *  kcmformats.cpp
+ *  localelistmodel.h
  *  Copyright 2014 Sebastian Kügler <sebas@kde.org>
  *  Copyright 2021 Han Young <hanyoung@protonmail.com>
  *

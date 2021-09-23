@@ -13,16 +13,16 @@
 #include <KPluginFactory>
 #include <KSharedConfig>
 
-#include "exampleutility.cpp"
 #include "formatssettings.h"
 #include "kcmformats.h"
 #include "localelistmodel.h"
+#include "optionsmodel.h"
 
 K_PLUGIN_CLASS_WITH_JSON(KCMFormats, "metadata.json")
 
 KCMFormats::KCMFormats(QObject *parent, const QVariantList &args)
     : KQuickAddons::ManagedConfigModule(parent, args)
-    , m_settings(new FormatsSettings(this))
+    , m_optionsModel(new OptionsModel(this))
 {
     KAboutData *aboutData = new KAboutData(QStringLiteral("kcm_formats"),
                                            i18nc("@title", "Formats"),
@@ -40,54 +40,18 @@ KCMFormats::KCMFormats(QObject *parent, const QVariantList &args)
 
     qmlRegisterAnonymousType<FormatsSettings>("kcmformats", 1);
     qmlRegisterType<LocaleListModel>("LocaleListModel", 1, 0, "LocaleListModel");
-    connect(m_settings, &FormatsSettings::langChanged, this, &KCMFormats::handleLangChange);
-    connect(m_settings, &FormatsSettings::numericChanged, this, &KCMFormats::numericExampleChanged);
-    connect(m_settings, &FormatsSettings::timeChanged, this, &KCMFormats::timeExampleChanged);
-    connect(m_settings, &FormatsSettings::monetaryChanged, this, &KCMFormats::monetaryExampleChanged);
-    connect(m_settings, &FormatsSettings::measurementChanged, this, &KCMFormats::measurementExampleChanged);
-    connect(m_settings, &FormatsSettings::collateChanged, this, &KCMFormats::collateExampleChanged);
+    qmlRegisterAnonymousType<OptionsModel>("kcmformats_optionsmodel", 1);
 }
 
-void KCMFormats::handleLangChange()
-{
-    auto defaultVal = i18n("Default");
-    if (m_settings->numeric() == defaultVal)
-        Q_EMIT numericExampleChanged();
-    if (m_settings->time() == defaultVal)
-        Q_EMIT timeExampleChanged();
-    if (m_settings->measurement() == defaultVal)
-        Q_EMIT measurementExampleChanged();
-    if (m_settings->monetary() == defaultVal)
-        Q_EMIT monetaryExampleChanged();
-    if (m_settings->collate() == defaultVal)
-        Q_EMIT collateExampleChanged();
-}
-
-QString KCMFormats::numberExample() const
-{
-    return Utility::numericExample(QLocale(m_settings->numeric()));
-}
-QString KCMFormats::timeExample() const
-{
-    return Utility::timeExample(QLocale(m_settings->time()));
-}
-QString KCMFormats::currencyExample() const
-{
-    return Utility::monetaryExample(QLocale(m_settings->monetary()));
-}
-QString KCMFormats::measurementExample() const
-{
-    return Utility::measurementExample(QLocale(m_settings->measurement()));
-}
-QString KCMFormats::collateExample() const
-{
-    return Utility::collateExample(m_settings->collate());
-}
 FormatsSettings *KCMFormats::settings() const
 {
-    return m_settings;
+    return m_optionsModel->settings();
 }
 
+OptionsModel *KCMFormats::optionsModel() const
+{
+    return m_optionsModel;
+}
 QQuickItem *KCMFormats::getSubPage(int index) const
 {
     return subPage(index);

@@ -14,71 +14,17 @@ KCM.ScrollViewKCM {
     id: root
     implicitHeight: Kirigami.Units.gridUnit * 40
     implicitWidth: Kirigami.Units.gridUnit * 20
-    Kirigami.FormLayout {
-        id: formLayout
-
-        Kirigami.BasicListItem {
-            text: i18n("Region")
-            subtitle: kcm.settings.lang
-            onClicked: {
-                pushWithSetting("lang")
-            }
-            Layout.preferredWidth: root.width - 20
-        }
-        Kirigami.BasicListItem {
-            text: i18n("Number")
-            subtitle: kcm.settings.numeric
-            trailing: Text {
-                text: kcm.numberExample
+    view: ListView {
+        model: kcm.optionsModel
+        delegate: Kirigami.BasicListItem {
+            text: name
+            subtitle: localeName
+            trailing: QQC2.Label {
+                text: example
             }
             onClicked: {
-                pushWithSetting("numeric")
+                pushWithSetting(page)
             }
-            Layout.preferredWidth: root.width - 20
-        }
-        Kirigami.BasicListItem {
-            text: i18n("Time")
-            subtitle: kcm.settings.time
-            trailing: Text {
-                text: kcm.timeExample
-            }
-            onClicked: {
-                pushWithSetting("time")
-            }
-            Layout.preferredWidth: root.width - 20
-        }
-        Kirigami.BasicListItem {
-            text: i18n("Currency")
-            subtitle: kcm.settings.monetary
-            trailing: Text {
-                text: kcm.currencyExample
-            }
-            onClicked: {
-                pushWithSetting("currency")
-            }
-            Layout.preferredWidth: root.width - 20
-        }
-        Kirigami.BasicListItem {
-            text: i18n("Measurement")
-            subtitle: kcm.settings.measurement
-            trailing: Text {
-                text: kcm.measurementExample
-            }
-            onClicked: {
-                pushWithSetting("measurement")
-            }
-            Layout.preferredWidth: root.width - 20
-        }
-        Kirigami.BasicListItem {
-            text: i18n("Collate and Sorting")
-            subtitle: kcm.settings.collate
-            trailing: Text {
-                text: kcm.collateExample
-            }
-            onClicked: {
-                pushWithSetting("collate")
-            }
-            Layout.preferredWidth: root.width - 20
         }
     }
 
