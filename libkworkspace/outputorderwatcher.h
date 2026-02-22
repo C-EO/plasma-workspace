@@ -6,16 +6,9 @@
 
 #pragma once
 
-#include <QAbstractNativeEventFilter>
-#include <QGuiApplication>
 #include <QObject>
 
 #include "kworkspace_export.h"
-#include <config-outputorder.h>
-
-#if HAVE_X11
-#include <xcb/xcb.h>
-#endif
 
 class QScreen;
 class QTimer;
@@ -77,38 +70,4 @@ protected:
     bool m_orderProtocolPresent = false;
 
 private:
-};
-
-#if HAVE_X11
-class X11OutputOrderWatcher : public OutputOrderWatcher, public QAbstractNativeEventFilter
-{
-    Q_OBJECT
-public:
-    X11OutputOrderWatcher(QObject *parent);
-    void refresh() override;
-
-protected:
-    bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
-
-private:
-    void roundtrip() const;
-
-    QNativeInterface::QX11Application *m_x11Interface = nullptr;
-    QTimer *m_delayTimer = nullptr; // This is just to simulate the protocol that will be guaranteed to always arrive after screens additions and removals
-    // Xrandr
-    int m_xrandrExtensionOffset;
-    xcb_atom_t m_kdeScreenAtom = XCB_ATOM_NONE;
-};
-#endif
-
-class WaylandOutputOrderWatcher : public OutputOrderWatcher
-{
-    Q_OBJECT
-public:
-    WaylandOutputOrderWatcher(QObject *parent);
-    void refresh() override;
-
-private:
-    bool hasAllScreens() const;
-    QStringList m_pendingOutputOrder;
 };

@@ -7,10 +7,14 @@
 
 #include "outputorderwatcher.h"
 
+#include <config-X11.h>
+
 #include <algorithm>
 #include <ranges>
 #include <version>
 
+#include <QAbstractNativeEventFilter>
+#include <QGuiApplication>
 #include <QScreen>
 #include <QTimer>
 
@@ -23,8 +27,43 @@
 #if HAVE_X11
 #include <X11/Xlib.h>
 #include <xcb/randr.h>
+#include <xcb/xcb.h>
 #include <xcb/xcb_event.h>
 #endif // HAVE_X11
+
+#if HAVE_X11
+class X11OutputOrderWatcher : public OutputOrderWatcher, public QAbstractNativeEventFilter
+{
+    Q_OBJECT
+public:
+    X11OutputOrderWatcher(QObject *parent);
+    void refresh() override;
+
+protected:
+    bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
+
+private:
+    void roundtrip() const;
+
+    QNativeInterface::QX11Application *m_x11Interface = nullptr;
+    QTimer *m_delayTimer = nullptr; // This is just to simulate the protocol that will be guaranteed to always arrive after screens additions and removals
+    // Xrandr
+    int m_xrandrExtensionOffset;
+    xcb_atom_t m_kdeScreenAtom = XCB_ATOM_NONE;
+};
+#endif // HAVE_X11
+
+class WaylandOutputOrderWatcher : public OutputOrderWatcher
+{
+    Q_OBJECT
+public:
+    WaylandOutputOrderWatcher(QObject *parent);
+    void refresh() override;
+
+private:
+    bool hasAllScreens() const;
+    QStringList m_pendingOutputOrder;
+};
 
 template<typename T>
 using ScopedPointer = QScopedPointer<T, QScopedPointerPodDeleter>;
