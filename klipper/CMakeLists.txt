@@ -49,7 +49,7 @@ target_link_libraries(klipper
     Plasma::PlasmaQuick
     Wayland::Client
     LayerShellQt::Interface
-    ${ZLIB_LIBRARY}
+    ZLIB::ZLIB
 )
 
 if (HAVE_X11)
