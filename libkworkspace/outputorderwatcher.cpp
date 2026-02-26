@@ -296,7 +296,7 @@ void X11OutputOrderWatcher::refresh()
     const auto getAllValues = [](const QList<std::pair<uint, QString>> &orderMap) -> QList<QString> {
         QList<QString> values;
         values.reserve(orderMap.size());
-        std::transform(orderMap.begin(), orderMap.end(), std::back_inserter(values), [](const auto &pair) {
+        std::transform(orderMap.cbegin(), orderMap.cend(), std::back_inserter(values), [](const auto &pair) {
             return pair.second;
         });
         return values;
