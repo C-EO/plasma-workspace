@@ -481,7 +481,10 @@ void RootModel::refresh()
             if (entry->type() == AbstractEntry::ApplicationType) {
                 auto *appEntry = static_cast<AppEntry *>(entry);
 
-                const QString appId = appEntry->id();
+                const QString appId = appEntry->service()->storageId();
+                if (appId.isEmpty()) {
+                    return;
+                }
                 installedApps.append(appId);
 
                 QDate firstSeen;
@@ -680,15 +683,18 @@ void RootModel::refreshNewlyInstalledApps()
         if (entry->type() == AbstractEntry::ApplicationType) {
             auto *appEntry = static_cast<AppEntry *>(entry);
 
-            const QString appId = appEntry->id();
+            const QString appId = appEntry->service()->storageId();
+            if (appId.isEmpty()) {
+                return;
+            }
             installedApps.append(appId);
 
             if (appEntry->isNewlyInstalled()) {
                 hasTrackedApp = true;
             } else if (appEntry->firstSeen().isValid()) {
-                qCDebug(KICKER_DEBUG) << appEntry->id() << "is no longer considered newly installed";
+                qCDebug(KICKER_DEBUG) << appId << "is no longer considered newly installed";
                 appEntry->setFirstSeen(QDate());
-                applicationsGroup.deleteGroup(appEntry->id());
+                applicationsGroup.deleteGroup(appId);
 
                 refreshNewlyInstalledEntry(appEntry);
             }
@@ -750,12 +756,12 @@ void RootModel::onResourceScoresChanged(const QString &activity,
         if (entry->type() == AbstractEntry::ApplicationType) {
             auto *appEntry = static_cast<AppEntry *>(entry);
 
-            if (appEntry->id() == appId && appEntry->isNewlyInstalled()) {
-                qCDebug(KICKER_DEBUG) << appEntry->id() << "is no longer considered newly installed (resourceScore)";
+            if (appEntry->service()->storageId() == appId && appEntry->isNewlyInstalled()) {
+                qCDebug(KICKER_DEBUG) << appId << "is no longer considered newly installed (resourceScore)";
                 appEntry->setFirstSeen(QDate());
                 auto stateConfig = Kicker::stateConfig();
                 KConfigGroup applicationsGroup = stateConfig->group(QStringLiteral("Application"));
-                applicationsGroup.deleteGroup(appEntry->id());
+                applicationsGroup.deleteGroup(appId.toString());
 
                 refreshNewlyInstalledEntry(appEntry);
             }

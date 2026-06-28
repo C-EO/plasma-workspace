@@ -16,6 +16,7 @@
 #include <QProcess>
 #include <QQmlPropertyMap>
 #include <QStandardPaths>
+#include <QUrl>
 #include <QUrlQuery>
 
 #include <KApplicationTrader>
@@ -255,7 +256,17 @@ QString AppEntry::id() const
         return m_id;
     }
 
-    return m_service->storageId();
+    // build these like the KRunner service runner does
+    QUrl url;
+    url.setScheme(QStringLiteral("applications"));
+    url.setPath(m_service->storageId());
+
+    if (m_serviceAction) {
+        QUrlQuery urlQuery;
+        urlQuery.addQueryItem(QStringLiteral("action"), m_serviceAction.value().name());
+        url.setQuery(urlQuery);
+    }
+    return url.toString();
 }
 
 void AppEntry::reload()
@@ -269,7 +280,7 @@ void AppEntry::reload()
             m_icon = QString();
         }
     } else {
-        m_service = KService::serviceByStorageId(id());
+        m_service = KService::serviceByStorageId(m_id.isEmpty() ? m_service->storageId() : m_id);
         // This happens when the application has just been uninstalled
         if (!m_service) {
             m_service = new KService(QString());
